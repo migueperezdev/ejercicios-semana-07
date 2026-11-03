@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ejercicios — Semana 7
 
-## Getting Started
+Proyecto de ejercicios de CODE NODE para practicar Next.js con App Router y TypeScript.
 
-First, run the development server:
+## Instalación y arranque
 
-```bash
+Desde la carpeta del proyecto:
+
+```cmd
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La aplicación se abre en http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Ejercicio 1 — API del tostadero
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### GET /api/estado
 
-## Learn More
+Devuelve un JSON con el estado del tostadero:
 
-To learn more about Next.js, take a look at the following resources:
+- `abierto`: indica si está abierto.
+- `cafesDisponibles`: cantidad de cafés disponibles.
+- `proximaCata`: fecha de ejemplo de la próxima cata.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Archivo: `src/app/api/estado/route.ts`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### POST /api/reservas
 
-## Deploy on Vercel
+Recibe un JSON con:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `nombre`: texto obligatorio que no puede estar vacío ni contener solo espacios.
+- `personas`: número entero entre 1 y 6.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Si los datos son correctos, devuelve la reserva con estado 201.
+Si el JSON es incorrecto o los campos no son válidos, devuelve un error con estado 400.
+
+Las reservas todavía no se guardan en una base de datos.
+
+Archivo: `src/app/api/reservas/route.ts`.
+
+### Pruebas realizadas con curl
+
+Comandos ejecutados en Windows CMD, con el servidor de desarrollo funcionando.
+
+Se muestran el estado HTTP, el tipo de contenido y el cuerpo de las respuestas.
+
+#### 1. Consultar el estado del tostadero
+
+Comando:
+
+```cmd
+curl.exe -i http://localhost:3000/api/estado
+```
+
+Respuesta:
+
+```http
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"abierto":true,"cafesDisponibles":4,"proximaCata":"2026-11-20"}
+```
+
+#### 2. Enviar una reserva correcta
+
+Comando:
+
+```cmd
+curl.exe -i -X POST http://localhost:3000/api/reservas -H "Content-Type: application/json" -d "{\"nombre\":\"Ana\",\"personas\":2}"
+```
+
+Respuesta:
+
+```http
+HTTP/1.1 201 Created
+content-type: application/json
+
+{"nombre":"Ana","personas":2}
+```
+
+#### 3. Enviar una reserva con demasiadas personas
+
+Comando:
+
+```cmd
+curl.exe -i -X POST http://localhost:3000/api/reservas -H "Content-Type: application/json" -d "{\"nombre\":\"Ana\",\"personas\":7}"
+```
+
+Respuesta:
+
+```http
+HTTP/1.1 400 Bad Request
+content-type: application/json
+
+{"error":"Personas debe ser un número entero entre 1 y 6."}
+```
+
+#### 4. Enviar una reserva sin nombre
+
+Comando:
+
+```cmd
+curl.exe -i -X POST http://localhost:3000/api/reservas -H "Content-Type: application/json" -d "{\"personas\":2}"
+```
+
+Respuesta:
+
+```http
+HTTP/1.1 400 Bad Request
+content-type: application/json
+
+{"error":"Debes enviar los campos nombre y personas."}
+```
