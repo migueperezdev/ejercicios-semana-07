@@ -112,3 +112,38 @@ content-type: application/json
 
 {"error":"Debes enviar los campos nombre y personas."}
 ```
+## Ejercicio 2. Tabla de cafés con Drizzle y SQLite
+
+La tabla `cafes` tiene un ID autoincremental, nombre, origen, precio y tueste.
+El seed carga cuatro cafés de orígenes distintos.
+
+Desde la raíz del proyecto, instala las dependencias, crea la tabla, carga los
+datos y ejecuta las consultas.
+
+```cmd
+npm install
+npx drizzle-kit push
+npx tsx src/db/seed.ts
+npx tsx src/db/consultas.ts
+```
+
+La primera consulta muestra todos los cafés de menor a mayor precio.
+
+| Café | Precio | Tueste |
+|---|---:|---|
+| Brasil Cerrado | 9,80 | oscuro |
+| Colombia Huila | 11,50 | medio |
+| Guatemala Antigua | 12,40 | medio |
+| Etiopía Sidamo | 13,90 | claro |
+
+La segunda consulta filtra por tueste `medio` y muestra Colombia Huila y
+Guatemala Antigua.
+
+Para comprobar las filas guardadas, abre Drizzle Studio y selecciona `cafes`.
+
+```cmd
+npx drizzle-kit studio
+```
+
+La base de datos se guarda en `data/ejercicios.db`. La regla `data/` de
+`.gitignore` excluye ese archivo del repositorio.
