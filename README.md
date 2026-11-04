@@ -147,3 +147,28 @@ npx drizzle-kit studio
 
 La base de datos se guarda en `data/ejercicios.db`. La regla `data/` de
 `.gitignore` excluye ese archivo del repositorio.
+
+## Ejercicio 3. Libro de catas
+
+La página `/catas` consulta directamente la tabla `valoraciones` con Drizzle.
+Muestra las valoraciones más recientes primero y, debajo, un formulario
+para añadir otra.
+
+La Server Action valida que el nombre y el comentario tengan contenido y
+que la puntuación sea un entero del 1 al 5. Si los datos son válidos,
+guarda la valoración en SQLite y llama a `revalidatePath("/catas")` para
+actualizar el listado. El formulario muestra los errores con `useActionState`.
+
+Para preparar la base de datos y arrancar la aplicación desde un clon nuevo,
+ejecuta estos comandos desde la raíz del proyecto.
+
+```cmd
+npm install
+npx drizzle-kit push
+npm run dev
+```
+
+Abre http://localhost:3000/catas. Envía una valoración válida y comprueba
+que aparece al guardar y sigue visible tras recargar. Para probar la
+validación del servidor, rellena los demás campos y escribe solo espacios
+en el nombre. Aparecerá un mensaje y el listado conservará sus filas.
